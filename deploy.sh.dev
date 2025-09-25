@@ -18,6 +18,7 @@ gcloud run deploy "${SERVICE_NAME}" \
   --no-allow-unauthenticated \
   --port 8080 \
   --memory "${MEMORY}"
+  --env-vars-file="./.env.yaml"
 
 echo ">>> Done."
 echo "Service: ${SERVICE_NAME}"
