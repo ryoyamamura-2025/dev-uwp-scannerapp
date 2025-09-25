@@ -2,13 +2,50 @@
 <html>
 <head>
     <title>スキャンプレビュー</title>
+    <style>
+        /* 簡単なスタイルを追加 */
+        body { font-family: sans-serif; }
+        .container { background-color: #f0f0f0; padding: 20px; border-radius: 8px; }
+        .preview-wrapper { display: flex; justify-content: center; align-items: flex-start; gap: 0px; margin-top: 0px; }
+        .preview-box { border: 2px dashed #ccc; width: 400px; height: 400px; display: flex; align-items: center; justify-content: center; background-color: #ffffff; position: relative; }
+        .preview-box img { max-width: 100%; max-height: 100%; display: none; }
+        .preview-box span { color: #888; }
+        .upload-section { text-align: center; margin-bottom: 20px; }
+        .upload-btn { padding: 10px 20px; font-size: 16px; cursor: pointer; }
+        .preview-title { text-align: center; font-weight: bold; margin-top: 5px; color: #555;}
+    </style>
 </head>
-<body style="background-color: #f0f0f0;">
-    <h1>スキャン結果プレビュー (Webアプリ) </h1>
-    <div id="preview-container" style="border: 2px dashed #ccc; width: 400px; height: 400px; display: flex; align-items: center; justify-content: center; background-color: #ffffff;">
-      <img id="scanned-image-preview" src="" alt="スキャン結果" style="max-width: 100%; max-height: 100%;">
-      <span id="placeholder-text">スキャン結果がここに表示されます</span>
+<body>
+
+<div class="container">
+    <h1 style="text-align: center;">🍌画像変換アプリ</h1>
+
+    <div class="upload-section">
+        <input type="file" id="image-upload-input" accept="image/*" style="display: none;">
+        <button onclick="document.getElementById('image-upload-input').click()" class="upload-btn">
+            画像ファイルを選択
+        </button>
     </div>
-    <script src="/static/script.js"></script>
+    <div class="preview-wrapper">
+        <div>
+            <div id="scan-preview-container" class="preview-box">
+                <img id="scanned-image-preview" src="" alt="元画像プレビュー">
+                <span id="scan-placeholder-text">元画像がここに表示されます</span>
+            </div>
+            <p class="preview-title">元画像</p>
+        </div>
+        
+        <div>
+            <div id="ps-preview-container" class="preview-box">
+                <img id="ps-image-preview" src="" alt="処理結果プレビュー">
+                <span id="ps-placeholder-text">処理結果がここに表示されます</span>
+            </div>
+            <p class="preview-title">処理結果</p>
+        </div>
+    </div>
+</div>
+
+<script src="/static/script.js"></script>
+
 </body>
 </html>

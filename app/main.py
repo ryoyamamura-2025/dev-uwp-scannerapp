@@ -1,6 +1,8 @@
 # main.py
 import base64
 import io
+import os
+from dotenv import load_dotenv
 
 from fastapi import FastAPI, APIRouter, HTTPException, Request
 from fastapi.responses import FileResponse
@@ -10,6 +12,18 @@ from pydantic import BaseModel, Field
 import uvicorn
 
 from PIL import Image
+from google import genai
+
+load_dotenv() # GOOGLE_APPLICATION_CREDENTIALS を読み込む
+GCP_PROJECT_ID = os.environ["GCP_PROJECT_ID"]
+LOCATION = os.environ["LOCATION"]
+
+# Geminiクライアント初期化
+_client = genai.Client(
+    vertexai=True,
+    project=GCP_PROJECT_ID,
+    location=LOCATION,
+)
 
 # --- アプリケーション設定 ---
 app = FastAPI(title="Sample Application")
@@ -81,6 +95,52 @@ async def color_change(data: ImageData):
 
     except Exception as e:
         return {"error": f"An error occurred: {str(e)}"}, 500
+
+@app.post("/generate-image")
+async def generate_image(data: ImageData):
+    """
+    base64で受け取った画像とプロンプトを元にGeminiで新しい画像を生成し、base64データを返す
+    """
+    prompt = (
+        "Using the provided image of a document, please meticulously retouch the scene "
+        "to eliminate all unwanted elements such as shadows, glare, and any visible parts of a hand or fingers. "
+        "Ensure the document is perfectly straightened and flattened, simulating a direct overhead shot under soft, "
+        "natural light, resulting in a pristine and highly readable digital document. "
+        "Do not alter any text or graphics within the document."
+    )
+
+    try:
+        # Base64データをデコードして画像として開く
+        header, encoded = data.image_data.split(",", 1)
+        image_bytes = base64.b64decode(encoded)
+        image = Image.open(io.BytesIO(image_bytes))
+
+        # image = Image.open('./static/assets/unnamed.png')
+
+        response = _client.models.generate_content(
+            model="gemini-2.5-flash-image-preview",
+            contents=[prompt, image],
+        )
+
+        generated_image_bytes = None
+        for part in response.candidates[0].content.parts:
+            if part.text is not None:
+                print(part.text)
+            elif part.inline_data is not None:
+                generated_image_bytes = part.inline_data.data
+
+        if generated_image_bytes is None:
+            error_message = "Image generation failed. No image data in response."
+            raise HTTPException(status_code=500, detail=error_message)
+
+        # 生成された画像をBase64にエンコード
+        img_str = base64.b64encode(generated_image_bytes).decode("utf-8")
+        # 元のヘッダーを付けて返す
+        new_image_data = f"data:image/png;base64,{img_str}"
+        return {"image_data": new_image_data, "message": "Image generated successfully"}
+    
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"An error occurred: {str(e)}")
 
 if __name__ == "__main__":
     uvicorn.run(app, host="0.0.0.0", port=8080)
