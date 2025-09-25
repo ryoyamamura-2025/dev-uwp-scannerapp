@@ -2,7 +2,6 @@
 import base64
 import io
 import os
-from dotenv import load_dotenv
 
 from fastapi import FastAPI, APIRouter, HTTPException, Request
 from fastapi.responses import FileResponse
@@ -14,9 +13,8 @@ import uvicorn
 from PIL import Image
 from google import genai
 
-load_dotenv() # GOOGLE_APPLICATION_CREDENTIALS を読み込む
-GCP_PROJECT_ID = os.environ["GCP_PROJECT_ID"]
-LOCATION = os.environ["LOCATION"]
+GCP_PROJECT_ID = os.environ.get("GCP_PROJECT_ID")
+LOCATION = os.environ.get("LOCATION")
 
 # Geminiクライアント初期化
 _client = genai.Client(

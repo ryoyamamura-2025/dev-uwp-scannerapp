@@ -44,6 +44,7 @@ case "$1" in
       -p 3232:8080 \
       -v "$PWD":/workspace \
       -w /workspace/app \
+      --env-file ./.env \
       ${IMAGE_NAME}:${TAG}
     ;;
 
