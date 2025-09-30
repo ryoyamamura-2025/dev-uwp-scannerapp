@@ -63,7 +63,9 @@ case "$1" in
       -p 3232:8080 \
       -v "$PWD":/workspace \
       -w /workspace/app \
-      ${IMAGE_NAME}:${TAG}
+      --env-file ./.env \
+      ${IMAGE_NAME}:${TAG} \
+      /bin/bash
     ;;
 
   *)
