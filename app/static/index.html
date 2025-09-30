@@ -4,27 +4,26 @@
     <title>スキャンプレビュー</title>
     <style>
         /* 簡単なスタイルを追加 */
-        body { font-family: sans-serif; }
-        .container { background-color: #f0f0f0; padding: 20px; border-radius: 8px; }
+        body { font-family: sans-serif; background-color: #e6e9a7;}
+        .container { background-color: #e6e9a7; padding: 20px;}
         .preview-wrapper { display: flex; justify-content: center; align-items: flex-start; gap: 0px; margin-top: 0px; }
-        .preview-box { border: 2px dashed #ccc; width: 400px; height: 400px; display: flex; align-items: center; justify-content: center; background-color: #ffffff; position: relative; }
+        .preview-box { border: 2px dashed #ccc; width: 400px; height: 400px; display: flex; align-items: center; justify-content: center; background-color: gray; position: relative; }
         .preview-box img { max-width: 100%; max-height: 100%; display: none; }
-        .preview-box span { color: #888; }
-        .upload-section { text-align: center; margin-bottom: 20px; }
-        .upload-btn { padding: 10px 20px; font-size: 16px; cursor: pointer; }
+        .preview-box span { color: whitesmoke; }
+        .upload-section { display: flex; justify-content: center; align-items: center; gap: 20px; }
+        .upload-btn {height: 30px; padding: auto; margin: 15px 10px 10px 10px; font-size: 12px; cursor: pointer; background-color: gainsboro; }
         .preview-title { text-align: center; font-weight: bold; margin-top: 5px; color: #555;}
     </style>
 </head>
 <body>
 
 <div class="container">
-    <h1 style="text-align: center;">🍌画像変換アプリ</h1>
-
     <div class="upload-section">
-        <input type="file" id="image-upload-input" accept="image/*" style="display: none;">
+        <h1 style="text-align: center;">🍌画像変換アプリ</h1>
         <button onclick="document.getElementById('image-upload-input').click()" class="upload-btn">
-            画像ファイルを選択
+            ファイルを選択
         </button>
+        <input type="file" id="image-upload-input" accept="image/*" style="display: none;">
     </div>
     <div class="preview-wrapper">
         <div>
