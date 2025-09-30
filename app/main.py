@@ -99,15 +99,30 @@ async def generate_image(data: ImageData):
     """
     base64で受け取った画像とプロンプトを元にGeminiで新しい画像を生成し、base64データを返す
     """
+    # prompt = (
+    #     "Using the provided image of a document, please meticulously retouch the scene "
+    #     "to eliminate all unwanted elements such as shadows, glare, and any visible parts of a hand or fingers. "
+    #     "Ensure the document is perfectly straightened and flattened, simulating a direct overhead shot under soft, "
+    #     "natural light, resulting in a pristine and highly readable digital document. "
+    #     "Do not alter any text or graphics within the document."
+    # )
+
     prompt = (
-        "Using the provided image of a document, please meticulously retouch the scene "
-        "to eliminate all unwanted elements such as shadows, glare, and any visible parts of a hand or fingers. "
-        "Ensure the document is perfectly straightened and flattened, simulating a direct overhead shot under soft, "
-        "natural light, resulting in a pristine and highly readable digital document. "
-        "Do not alter any text or graphics within the document."
+        "Given the first image of a white papercraft car blueprint, "
+        "integrate the artwork from the second image onto its surfaces as a decorative pattern. "
+        "It is crucial that the structural lines, folds, and all original details of the blueprint in the first image are preserved exactly as they are. "
+        "Only the visual texture and design on the car's body "
+        "should be replaced by the content of the second image."
     )
 
     try:
+        # ベースとなる画像を開く
+        image_base = Image.open("./static/assets/skyline_mono.gif")
+        # 必要に応じて RGB に変換
+        if image_base.mode != 'RGB':
+            print(f"Image is in mode '{image_base.mode}', converting to 'RGB'.")
+            image_base = image_base.convert('RGB')
+
         # Base64データをデコードして画像として開く
         header, encoded = data.image_data.split(",", 1)
         image_bytes = base64.b64decode(encoded)
@@ -117,7 +132,7 @@ async def generate_image(data: ImageData):
 
         response = _client.models.generate_content(
             model="gemini-2.5-flash-image-preview",
-            contents=[prompt, image],
+            contents=[prompt, image_base, image],
         )
 
         generated_image_bytes = None
